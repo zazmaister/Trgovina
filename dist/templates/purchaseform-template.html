@@ -1,0 +1,122 @@
+<shopping-cart title="Nakupni obrazec" show-buttons="false"></shopping-cart>
+<div>
+	<div class="row" ng-show="getNumberOfProducts()!=0">
+		<div class="col-md-4 col-md-offset-8">
+			<table class="table-striped" style="width:100%;">
+				<tr style="border-bottom:1px solid black;">
+					<td align="right">Skupaj brez DDV:</td>
+					<td align="right">{{getPriceOfAllProducts()*0.81967 | number : 2 | currency : "€"}}</td>
+				</tr>
+				<tr style="border-bottom:1px solid black;">
+					<td align="right">DDV:</td>
+					<td align="right">{{getPriceOfAllProducts()*0.18033 | number : 2 | currency : "€"}}</td>
+				</tr>
+				<tr>
+					<td align="right">Skupaj:</td>
+					<td align="right"> {{getPriceOfAllProducts() | number : 2 | currency : "€"}}</td>
+				</tr>
+			</table>
+
+		</div>
+	</div>
+	<form name="AppForm" class="form-horizontal"  ng-show="getNumberOfProducts()!=0" novalidate>
+		<div class="row">
+			<div class="form-group">
+				<label for="firstName" class="col-md-2 control-label">Ime:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="text" name="firstName" ng-model="firstName" ng-required="true">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.firstName.$error.required && AppForm.firstName.$touched">To polje je obvezno!</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<label for="lastName" class="col-md-2 control-label">Priimek:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="text" name="lastName" ng-model="lastName" ng-required="true">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.lastName.$error.required && AppForm.lastName.$touched">To polje je obvezno!</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<label for="email" class="col-md-2 control-label">Email:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="email" name="email" ng-model="email" ng-required="true" ng-pattern="/\S+@\S+\.\S+/">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.email.$error.required && AppForm.email.$touched">To polje je obvezno!</p>
+					<p class="text-danger" ng-show="AppForm.email.$error.pattern && AppForm.email.$touched">To polje mora biti email(example@example.si)</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<label for="address" class="col-md-2 control-label">Naslov:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="text" name="address" ng-model="address" ng-required="true">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.address.$error.required && AppForm.address.$touched">To polje je obvezno!</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<label for="country" class="col-md-2 control-label">Država:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="text" name="country" ng-model="country" ng-required="true">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.country.$error.required && AppForm.country.$touched">To polje je obvezno!</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<label for="city" class="col-md-2 control-label">Mesto:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="text" name="city" ng-model="city" ng-required="true">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.city.$error.required && AppForm.city.$touched">To polje je obvezno!</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<label for="phone" class="col-md-2 control-label">Telefon:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="text" name="phone" ng-model="phone" ng-required="true" ng-pattern="/\d{9}/" ng-maxlength="9">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.phone.$error.required && AppForm.phone.$touched">To polje je obvezno!</p>
+					<p class="text-danger" ng-show="AppForm.phone.$error.pattern && AppForm.phone.$touched">To polje mora biti 9 mestna telefonska številka!</p>
+					<p class="text-danger" ng-show="AppForm.phone.$error.maxlength && AppForm.phone.$touched">To polje vsebuje preveč znakov!</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group">
+				<label for="zip" class="col-md-2 control-label">Poštna številka:</label>
+				<div class="col-md-4">
+					<input class="form-control" type="text" name="zip" ng-model="zip" ng-required="true" ng-pattern = "/\d{4,6}/" ng-maxlength="6">
+				</div>
+				<div class="col-md-4">
+					<p class="text-danger" ng-show="AppForm.zip.$error.required && AppForm.zip.$touched">To polje je obvezno!</p>
+					<p class="text-danger" ng-show="AppForm.zip.$error.pattern && AppForm.zip.$touched">To polje mora biti poštna številka!</p>
+					<p class="text-danger" ng-show="AppForm.zip.$error.maxlength && AppForm.zip.$touched">To polje vsebuje preveč znakov!</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4 col-md-offset-2">
+				<button class="btn btn-primary" ng-disabled="!AppForm.$valid" ng-click="setUserData()">Oddaj</button>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,34 @@
+<h1>{{title}}</h1>
+
+	<div  ng-hide = "emptyShoppingCart.show">
+		<table class="table">
+			<tr>
+				<th class="col-md-1 text-center">ID</th>
+				<th class="col-md-3 text-center">Ime</th>
+				<th class="col-md-2 text-center">Spletna cena</th>
+				<th class="col-md-2 text-center">Količina</th>
+				<th class="col-md-2 text-center">Znesek</th>
+				<th class="col-md-2 text-center"></th>
+			</tr>
+			<tr ng-repeat="product in getProducts() track by $index">
+				<td class="col-md-1 text-center">{{product.id}}</td>
+				<td class="col-md-3 text-center">{{product.name}}</td>
+				<td class="col-md-2 text-center">{{product.price | currency : "€"}}</td>
+				<td class="col-md-2 text-center"  ng-show="{{showButtons}}"><input type="number" min="1" max="30" class="form-control" ng-model="product.quantity" /></td>
+				<td class="col-md-2 text-center" ng-show="!{{showButtons}}">{{product.quantity}}</td>
+				<td class="col-md-2 text-center" ng-show="{{showButtons}}" >{{product.price * product.quantity | number : 2 | currency : "€"}}</td>
+				<td class="col-md-4 text-center" ng-show="!{{showButtons}}" >{{product.price * product.quantity | number : 2 | currency : "€"}}</td>
+				<td class="col-md-2 text-center"  ng-show="{{showButtons}}" ><button class="btn btn-danger" ng-click="removeProduct($index)">Odstrani</button> </td>
+			</tr>
+	
+		</table>
+		<div class="row">
+			<div class="col-md-2 col-md-offset-10">
+					<button class="btn btn-primary" style="width:100%;" ng-show="{{showButtons}}" ng-click="redirectToPurchaseForm()">Naprej</button>
+			</div>
+		</div>
+	</div>
+	<div ng-hide="!emptyShoppingCart.show">
+		<p style="margin:0;">{{emptyShoppingCart.msg}}</p>
+	</div>
+

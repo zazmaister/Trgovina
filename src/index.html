@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>SmartNinja project</title>
+
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+
+    <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="../bower_components/angular-resource/angular-resource.min.js"></script>
+
+
+    <script src="js/all.js"></script>
+
+    <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+
+<body ng-app="app">
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 jumbotron">
+            <div class="well">
+                <!-- Navbar -->
+                <a ui-sref="domov">Domov</a>
+                <a ui-sref="aboutUs">O nas</a>
+                <a ui-sref="privacyPolicy">Politika zasebnosti</a>
+                <a ui-sref="cookies">Piškotki</a>
+
+                <a class="pull-right" ui-sref="shoppingCart" ng-controller="ShoppingCartController" >Košarica({{getNumberOfProducts()}})</a>
+            </div>
+        </div>        
+    </div>
+    <!-- Load all templates and templateUrls from states into this directive -->
+    <div class="well">
+      <ui-view></ui-view>
+    </div>
+</div>
+
+</body>
+</html>

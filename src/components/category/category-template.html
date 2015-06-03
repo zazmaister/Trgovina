@@ -1,0 +1,11 @@
+<h1>{{categoryName}}</h1>
+<div class="well" >
+	<ul style="list-style-type: none;padding:0;">
+		<li ng-repeat="cat in category"><a ui-sref="product({productId: cat.id})" style="text-decoration: none;">{{cat.name}}</a></li>
+	</ul>
+	
+	<!--<img ng-src="{{ cat.image }}"/>
+	<p>Tags: {{cat.tagline}}</p>
+	<p>Description: {{cat.description}}</p>
+	<p>Price: {{cat.price | currency : "€"}}</p>-->
+</div>
