@@ -1,0 +1,130 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
+$font-stack: 	'Open Sans', sans-serif;
+#cssmenu {
+  background: #f96e5b;
+  width: auto;
+  padding : 0;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    display: inline-block;
+    zoom: 1;
+
+    li {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+
+      a {
+        color: #ffffff;
+        text-decoration: none;
+        display: block;
+        padding: 15px 25px;
+        font-family: $font-stack;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 14px;
+        position: relative;
+        transition: color .5s;
+      }
+      a:hover {
+        color: #333333;
+      }
+      a:before {
+        content: "";
+        display: block;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 5px;
+        width: 0;
+        background: #333333;
+        -webkit-transition: width .5s;
+        -moz-transition: width .5s;
+        -ms-transition: width .5s;
+        -o-transition: width .5s;
+        transition: width .5s;
+      }
+      a:hover:before {
+        width: 100%;
+      }
+      a:after {
+        content: "";
+        display: block;
+        position: absolute;
+        right: -3px;
+        top: 19px;
+        height: 6px;
+        width: 6px;
+        background: #ffffff;
+        opacity: .5;
+      }
+
+
+    }
+    .active a {
+      color: #333333;
+    }
+    .active a:before {
+      width: 100%;
+    }
+    .last > a:after {
+      display: none;
+    }
+  }
+
+  ul:after {
+    content: " ";
+    display: block;
+    font-size: 0;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+
+  .align-right {
+    float: right;
+  }
+
+  .align-right li.last > a:after{
+    display: block;
+  }
+  .align-right li:first-child a:after {
+    display: none;
+  }
+
+} 
+@media screen and (max-width: 768px) {
+  #cssmenu ul{ 
+    display:block;
+    li {
+      float: none;
+      display: block;
+
+      a {
+        width: 100%;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        border-bottom: 1px solid #fb998c;
+      }
+      .last > a,
+      :last-child > a{
+        border: 0;
+      }
+      a:after {
+        display: none;
+      }
+      a:before {
+        display: none;
+      }
+    }
+    
+  }
+  #cssmenu .align-right {
+   float:none; 
+  }
+}

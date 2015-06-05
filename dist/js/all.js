@@ -136,6 +136,18 @@ angular.module('app').factory('CategoryFactory', function ($resource) {
     }
     
 });
+angular.module('app').controller('CookiesController', function($scope){
+	$scope.title = "Piškotki";
+
+});
+angular.module('app').directive('cookies', function(){
+	return {
+		restrict: 'E',
+		scope:{},
+		controller: 'CookiesController',
+		templateUrl: 'templates/cookies-template.html'
+	};
+});
 angular.module('app').controller('ExampleController', function($scope){
 
 	$scope.example = 'Example from ExampleController';
@@ -147,18 +159,6 @@ angular.module('app').directive('appExample', function(){
 		scope:{},
 		controller: 'ExampleController',
 		templateUrl: 'templates/example-template.html'
-	};
-});
-angular.module('app').controller('CookiesController', function($scope){
-	$scope.title = "Piškotki";
-
-});
-angular.module('app').directive('cookies', function(){
-	return {
-		restrict: 'E',
-		scope:{},
-		controller: 'CookiesController',
-		templateUrl: 'templates/cookies-template.html'
 	};
 });
 angular.module('app').controller('HomeController', function($scope,$http,CategoryFactory){
@@ -193,6 +193,40 @@ angular.module('app').directive('privacyPolicy', function(){
 		controller: 'PrivacyPolicyController',
 		templateUrl: 'templates/privacypolicy-template.html'
 	};
+});
+angular.module('app').controller('ProductController', function($scope,$http,$stateParams, ShoppingCartFactory, ProductFactory){
+
+
+	$scope.status = 'V teku';
+
+	$scope.model = ShoppingCartFactory;
+
+	$scope.addProduct = function(product){
+    	$scope.model.addProduct(product);
+ 	};
+
+	$scope.product = ProductFactory.getProductFromREST().get({id:$stateParams.productId});
+
+});
+angular.module('app').directive('product', function(){
+	return {
+		restrict: 'E',
+		scope:{},
+		controller: 'ProductController',
+		templateUrl: 'templates/product-template.html'
+	};
+});
+angular.module('app').factory('ProductFactory', function ($resource) {
+
+    return {
+    	
+    	getProductFromREST:function(){
+    		return $resource("http://smartninja.betoo.si/api/eshop/products/:id");
+    	}
+
+
+    }
+    
 });
 angular.module('app').controller('PurchaseFormController', function($scope,ShoppingCartFactory,$state){
 
@@ -232,40 +266,6 @@ angular.module('app').directive('purchaseForm', function(){
 		controller: 'PurchaseFormController',
 		templateUrl: 'templates/purchaseform-template.html'
 	};
-});
-angular.module('app').controller('ProductController', function($scope,$http,$stateParams, ShoppingCartFactory, ProductFactory){
-
-
-	$scope.status = 'V teku';
-
-	$scope.model = ShoppingCartFactory;
-
-	$scope.addProduct = function(product){
-    	$scope.model.addProduct(product);
- 	};
-
-	$scope.product = ProductFactory.getProductFromREST().get({id:$stateParams.productId});
-
-});
-angular.module('app').directive('product', function(){
-	return {
-		restrict: 'E',
-		scope:{},
-		controller: 'ProductController',
-		templateUrl: 'templates/product-template.html'
-	};
-});
-angular.module('app').factory('ProductFactory', function ($resource) {
-
-    return {
-    	
-    	getProductFromREST:function(){
-    		return $resource("http://smartninja.betoo.si/api/eshop/products/:id");
-    	}
-
-
-    }
-    
 });
 angular.module('app').controller('ShoppingCartController', function($scope,$http,ShoppingCartFactory){
 
