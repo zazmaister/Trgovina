@@ -1,9 +1,40 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:700);
 $font-stack: 	'Open Sans', sans-serif;
+.inner-addon { 
+    position: relative; 
+}
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+  color:red;
+}
+.left-addon .glyphicon  { left:  0px;}
+.right-addon .glyphicon { right: 0px;}
+
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+app-typeahead{
+  ul{
+    li{
+      display: block!important;
+
+      a{
+        color: #333!important;
+      }
+    }
+  }
+
+}
+.popover{
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+}
 #cssmenu {
   background: #f96e5b;
   width: auto;
   padding : 0;
+  margin-top:20px;
 
   ul {
     list-style: none;
@@ -90,7 +121,7 @@ $font-stack: 	'Open Sans', sans-serif;
   }
 
   .align-right li.last > a:after{
-    display: block;
+    display: none;
   }
   .align-right li:first-child a:after {
     display: none;
@@ -127,4 +158,7 @@ $font-stack: 	'Open Sans', sans-serif;
   #cssmenu .align-right {
    float:none; 
   }
+}
+.navbar{
+  margin-top:20px;
 }

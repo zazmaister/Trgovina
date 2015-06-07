@@ -1,0 +1,10 @@
+
+<carousel interval="myInterval" >
+    <slide ng-repeat="slide in slides" active="slide.active">
+    	<a ui-sref="product({productId:slide.id})"><img ng-src="{{slide.image}}" style="margin:auto;"></a>
+        <div class="carousel-caption">
+          <h4>Slide {{$index + 1}}</h4>
+          <p>{{slide.name}}</p>
+        </div>
+    </slide>
+</carousel>

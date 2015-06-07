@@ -1,5 +1,6 @@
 //  Add ui-router as a dependency
-angular.module('app', ['ui.router',"ngResource"]);
+angular.module('app', ['ui.router',"ngResource","ui.bootstrap","ngAnimate"]);
+
 angular.module('app').config(function($stateProvider, $urlRouterProvider){
 
     //  If a user goes to an url that doesn't have a valid state assigned
@@ -84,6 +85,38 @@ angular.module('app').directive('aboutUs', function(){
 		scope:{},
 		controller: 'AboutUsController',
 		templateUrl: 'templates/aboutus-template.html'
+	};
+});
+angular.module('app').controller('SliderController', function ($scope,ProductFactory) {
+  $scope.myInterval = 5000;
+  var slides = $scope.slides = [];
+
+
+
+
+  var temp = [];
+  temp[0] = ProductFactory.getProductFromREST().get({id:58},function(success){
+    slides.push(temp[0]);
+  });
+  temp[1] = ProductFactory.getProductFromREST().get({id:21},function(success){
+    slides.push(temp[1]);
+  });
+  temp[2] = ProductFactory.getProductFromREST().get({id:25},function(success){
+    slides.push(temp[2]);
+  });
+  temp[3] = ProductFactory.getProductFromREST().get({id:6},function(success){
+    slides.push(temp[3]);
+  });
+  temp[4] = ProductFactory.getProductFromREST().get({id:26},function(success){
+    slides.push(temp[4]);
+  });
+
+});
+angular.module('app').directive('appCarousel', function(){
+	return {
+		restrict: 'E',
+		controller: 'SliderController',
+		templateUrl: 'templates/carousel-template.html',
 	};
 });
 angular.module('app').controller('CategoryController', function($scope,$http,$stateParams,CategoryFactory){
@@ -179,6 +212,27 @@ angular.module('app').directive('home', function(){
 		templateUrl: 'templates/home-template.html'
 	};
 });
+angular.module('app').controller('ModalInstanceController', function($scope, input, $modalInstance){
+
+    $scope.data = input;
+
+    $scope.ok = function() {
+        $modalInstance.close('Success');
+    };
+
+    $scope.cancel = function() {
+        $modalInstance.dismiss('Dismissed');
+    };
+
+});
+angular.module('app').directive('appModal', function ()
+{
+    return {
+        restrict:   'E',
+        controller: "ShoppingCartController",
+        template:   '<button class="btn btn-primary" ng-click="openModal()">Open modal</button>'
+    };
+});
 angular.module("app").factory("OrderFactory",function($resource){
 	return $resource('http://smartninja.betoo.si/api/eshop/orders');
 });
@@ -258,6 +312,13 @@ angular.module('app').controller('PurchaseFormController', function($scope,Shopp
     $state.go("orders");
   };
 
+  $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.opened = true;
+    };
+
 });
 angular.module('app').directive('purchaseForm', function(){
 	return {
@@ -267,15 +328,21 @@ angular.module('app').directive('purchaseForm', function(){
 		templateUrl: 'templates/purchaseform-template.html'
 	};
 });
-angular.module('app').controller('ShoppingCartController', function($scope,$http,ShoppingCartFactory){
+angular.module('app').controller('ShoppingCartController', function($scope,$http,ShoppingCartFactory, $modal){
 
 
-  
+  $scope.shoppingCartTemplateURL = {
+    templateUrl: "templates/shoppingcart-template.html",
+    title:"Košarica"
+  };
 
   $scope.model = ShoppingCartFactory;
 
   $scope.emptyShoppingCart = $scope.model.emptyShoppingCart;
 
+  $scope.getPriceOfAllProducts = function(){
+      return $scope.model.getPriceOfAllProducts();
+  };
   $scope.addProduct = function(product){
     $scope.model.addProduct(product);
   };
@@ -291,6 +358,29 @@ angular.module('app').controller('ShoppingCartController', function($scope,$http
   $scope.redirectToPurchaseForm = function(){
     return $scope.model.redirect();
   };
+
+   $scope.openModal = function ()
+            {
+                var modalInstance = $modal.open({
+                                                    templateUrl: 'templates/modalShoppingCart-template.html',
+                                                    controller:  'ModalInstanceController',
+                                                    resolve:     {
+                                                        input: function ()
+                                                        {
+                                                            return {priceOfAllProducts:$scope.getPriceOfAllProducts(),
+                                                                    numberOfProducts:$scope.getNumberOfProducts()};
+                                                        }
+                                                    }
+                                                });
+
+                modalInstance.result.then(function (success)
+                                          {
+                                              $scope.redirectToPurchaseForm();
+                                          }, function (error)
+                                          {
+                                              
+                                          });
+            }
 
 });
 angular.module('app').directive('shoppingCart', function(){
@@ -370,5 +460,25 @@ angular.module("app").factory("ShoppingCartFactory",function($state){
 		getUserData : function(){
 			return userData;
 		}
+	};
+});
+angular.module('app').controller('TypeController', function($scope, $http, $location){
+
+    $scope.getItems = function(query){
+        return $http.get('http://smartninja.betoo.si/api/eshop/products', {params:{query : query}}).then(function(response)
+                    {
+                        return response.data;
+                    });
+    };
+    $scope.onSelect = function ($item) {
+	    $scope.$item = $item;
+	    $location.path('/products/' + $scope.$item.id);
+	};
+});
+angular.module('app').directive('appTypeahead', function(){
+	return {
+		restrict: 'E',
+		controller: 'TypeController',
+		templateUrl: 'templates/typeahead-template.html'
 	};
 });

@@ -28,4 +28,11 @@ angular.module('app').controller('PurchaseFormController', function($scope,Shopp
     $state.go("orders");
   };
 
+  $scope.open = function($event) {
+        $event.preventDefault();
+        $event.stopPropagation();
+
+        $scope.opened = true;
+    };
+
 });
