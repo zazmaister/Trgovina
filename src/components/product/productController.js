@@ -8,7 +8,7 @@ angular.module('app').controller('ProductController', function($scope,$http,$sta
 	$scope.addProduct = function(product){
     	$scope.model.addProduct(product);
  	};
+ 	
 
 	$scope.product = ProductFactory.getProductFromREST().get({id:$stateParams.productId});
-
 });

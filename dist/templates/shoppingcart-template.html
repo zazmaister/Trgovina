@@ -10,7 +10,7 @@
 				<th class="col-md-2 text-center">Znesek</th>
 				<th class="col-md-2 text-center"></th>
 			</tr>
-			<tr ng-repeat="product in getProducts() track by $index">
+			<tr ng-repeat="product in getProducts()" class="demo">
 				<td class="col-md-1 text-center">{{product.id}}</td>
 				<td class="col-md-3 text-center">{{product.name}}</td>
 				<td class="col-md-2 text-center">{{product.price | currency : "€"}}</td>
@@ -22,6 +22,11 @@
 			</tr>
 	
 		</table>
+		<div class="row">
+			<div class="col-md-2 col-md-offset-10">
+				<button class="btn btn-danger" style="width:100%;" ng-show="{{showButtons}}" ng-click="model.emptyLocker()">Izprazni košarico</button>
+			</div>
+		</div>
 		<div class="row">
 			<div class="col-md-2 col-md-offset-10">
 					<button class="btn btn-primary" style="width:100%;" ng-show="{{showButtons}}" ng-click="openModal()">Naprej</button>

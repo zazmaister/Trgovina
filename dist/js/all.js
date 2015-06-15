@@ -1,6 +1,24 @@
 //  Add ui-router as a dependency
-angular.module('app', ['ui.router',"ngResource","ui.bootstrap","ngAnimate"]);
+angular.module('app', ['ui.router',"ngResource","ui.bootstrap","ngAnimate","angular-locker"]);
 
+angular.module('app').config(function(lockerProvider){
+	
+	//	Setting default driver and namespace
+	lockerProvider.setDefaultDriver('local')
+		  .setDefaultNamespace('app');
+	
+});
+
+
+angular.module("template/typeahead/typeahead-popup.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("template/typeahead/typeahead-popup.html",
+    "<ul class=\"dropdown-menu\" ng-show=\"isOpen()\" ng-style=\"{top: position.top+'px', left: position.left+'px'}\" style=\"display: block;\" role=\"listbox\" aria-hidden=\"{{!isOpen()}}\">\n" +
+    "    <li ng-repeat=\"match in matches\" class=\"animation-example\" ng-class=\"{active: isActive($index) }\" ng-mouseenter=\"selectActive($index)\" ng-click=\"selectMatch($index)\" role=\"option\" id=\"{{match.id}}\">\n" +
+    "        <div typeahead-match index=\"$index\" match=\"match\" query=\"query\" template-url=\"templateUrl\"></div>\n" +
+    "    </li>\n" +
+    "</ul>\n" +
+    "");
+}]);
 angular.module('app').config(function($stateProvider, $urlRouterProvider){
 
     //  If a user goes to an url that doesn't have a valid state assigned
@@ -220,9 +238,6 @@ angular.module('app').directive('appModal', function ()
         template:   '<button class="btn btn-primary" ng-click="openModal()">Open modal</button>'
     };
 });
-angular.module("app").factory("OrderFactory",function($resource){
-	return $resource('http://smartninja.betoo.si/api/eshop/orders');
-});
 angular.module('app').controller('PrivacyPolicyController', function($scope){
 	$scope.title = "Politika zasebnosti";
 
@@ -245,9 +260,9 @@ angular.module('app').controller('ProductController', function($scope,$http,$sta
 	$scope.addProduct = function(product){
     	$scope.model.addProduct(product);
  	};
+ 	
 
 	$scope.product = ProductFactory.getProductFromREST().get({id:$stateParams.productId});
-
 });
 angular.module('app').directive('product', function(){
 	return {
@@ -315,17 +330,20 @@ angular.module('app').directive('purchaseForm', function(){
 		templateUrl: 'templates/purchaseform-template.html'
 	};
 });
-angular.module('app').controller('ShoppingCartController', function($scope,$http,ShoppingCartFactory, $modal){
+angular.module('app').controller('ShoppingCartController', function($scope,$http,ShoppingCartFactory, $modal, locker){
 
 
   $scope.shoppingCartTemplateURL = {
-    templateUrl: "templates/shoppingcart-template.html",
+    templateUrl: "templates/popover-template.html",
     title:"Košarica"
   };
 
   $scope.model = ShoppingCartFactory;
 
   $scope.emptyShoppingCart = $scope.model.emptyShoppingCart;
+
+  $scope.emptyShoppingCart.show = locker.get("showEmptyShoppingCart", true);
+  $scope.model.setProducts($scope.model.getFromLocker());
 
   $scope.getPriceOfAllProducts = function(){
       return $scope.model.getPriceOfAllProducts();
@@ -370,6 +388,27 @@ angular.module('app').controller('ShoppingCartController', function($scope,$http
             }
 
 });
+
+angular.module("app").animation('.slide', [function() {
+  return {
+    // make note that other events (like addClass/removeClass)
+    // have different function input parameters
+    enter: function(element, doneFn) {
+      jQuery(element).fadeIn(1000, doneFn);
+
+      // remember to call doneFn so that angular
+      // knows that the animation has concluded
+    },
+
+    move: function(element, doneFn) {
+      jQuery(element).fadeIn(1000, doneFn);
+    },
+
+    leave: function(element, doneFn) {
+      jQuery(element).fadeOut(1000, doneFn);
+    }
+  }
+}]);
 angular.module('app').directive('shoppingCart', function(){
 	return {
 		restrict: 'E',
@@ -381,16 +420,19 @@ angular.module('app').directive('shoppingCart', function(){
 		templateUrl: 'templates/shoppingcart-template.html'
 	};
 });
-angular.module("app").factory("ShoppingCartFactory",function($state){
+angular.module("app").factory("ShoppingCartFactory",function($state, locker){
 	var products = [];
 	var userData = {};
+	//Returns index of product in products array if there is any.
 	function contains(array, obj) {
+
+
 	    for (var i = 0; i < array.length; i++) {
-	        if (array[i] === obj) {
-	            return true;
+	        if (array[i]["id"] === obj["id"]) {
+	            return i;
 	        }
 	    }
-	    return false;
+	    return -1;
 	}
 	return {
 
@@ -402,30 +444,40 @@ angular.module("app").factory("ShoppingCartFactory",function($state){
   			$state.go("purchaseForm");
   		},
 		addProduct: function(product){
-			if(contains(products, product)){
-				product.quantity +=1;
+			var index = contains(products, product);
+			if(index !== -1){
+				products[index].quantity +=1;
 			}else{
-				product.quantity = 1;
 				products.push(product);
+				products[products.length-1].quantity = 1;
 			}
-
+			locker.put('products', products);
 			if (this.getNumberOfProducts() === 0) {
 		      this.emptyShoppingCart.show = true;
 		    }else{
 		      this.emptyShoppingCart.show = false;
 		    }
+
+		    locker.put("showEmptyShoppingCart", this.emptyShoppingCart.show);
+
+		    
 			
 		},
 		removeProduct: function(product){
 			products.splice(product,1);
+			locker.put('products', products);
 			if (this.getNumberOfProducts() === 0) {
 		      this.emptyShoppingCart.show = true;
 		    }else{
 		      this.emptyShoppingCart.show = false;
 		    }
+		    locker.put("showEmptyShoppingCart", this.emptyShoppingCart.show);
 		},
 		getProducts: function(){
 			return products;
+		},
+		setProducts: function(productsFromLocker){
+			products = productsFromLocker;
 		},
 		getNumberOfProducts: function(){
 			var count = 0;
@@ -436,6 +488,7 @@ angular.module("app").factory("ShoppingCartFactory",function($state){
 		},
 		getPriceOfAllProducts: function(){
 			var count = 0;
+			
 			for(var i = 0;i<products.length;i++){
 				count += products[i].quantity * products[i].price;
 			}
@@ -446,6 +499,23 @@ angular.module("app").factory("ShoppingCartFactory",function($state){
 		},
 		getUserData : function(){
 			return userData;
+		},
+		getFromLocker : function(){
+			return locker.get("products",[]);
+		},
+		emptyLocker: function(){
+			locker.forget("products");
+			locker.forget("showEmptyShoppingCart");
+
+    		locker.empty();
+
+    		products = this.getFromLocker();
+    		if (this.getNumberOfProducts() === 0) {
+		      this.emptyShoppingCart.show = true;
+		    }else{
+		      this.emptyShoppingCart.show = false;
+		    }
+		    
 		}
 	};
 });
@@ -468,4 +538,7 @@ angular.module('app').directive('appTypeahead', function(){
 		controller: 'TypeController',
 		templateUrl: 'templates/typeahead-template.html'
 	};
+});
+angular.module("app").factory("OrderFactory",function($resource){
+	return $resource('http://smartninja.betoo.si/api/eshop/orders');
 });

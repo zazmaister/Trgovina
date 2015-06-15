@@ -124,3 +124,71 @@ app-typeahead ul li {
 
 .navbar {
   margin-top: 20px; }
+
+@-webkit-keyframes example {
+  0% {
+    background-color: red;
+    left: 0px;
+    bottom: 0px; }
+  25% {
+    background-color: yellow;
+    left: -200px;
+    bottom: 0px; }
+  50% {
+    background-color: blue;
+    left: 400px;
+    bottom: 0px; }
+  100% {
+    background-color: green;
+    left: 400px;
+    bottom: 400px; } }
+
+@keyframes example {
+  0% {
+    background-color: red;
+    left: 0px;
+    bottom: 0px; }
+  25% {
+    background-color: yellow;
+    left: -200px;
+    bottom: 0px; }
+  50% {
+    background-color: blue;
+    left: 400px;
+    bottom: 0px; }
+  100% {
+    background-color: green;
+    left: 400px;
+    bottom: 400px; } }
+
+/* The element to apply the animation to */
+.demo.ng-leave {
+  position: relative;
+  width: 100%;
+  background-color: red;
+  -webkit-animation-name: example;
+  /* Chrome, Safari, Opera */
+  -webkit-animation-duration: 2s;
+  -webkit-animation-name: example;
+          animation-name: example;
+  -webkit-animation-duration: 2s;
+          animation-duration: 2s; }
+
+.animation-example.ng-enter,
+.animation-example.ng-leave {
+  -webkit-transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  transition: 400ms cubic-bezier(0.25, 0.25, 0.75, 0.75) all;
+  position: relative;
+  display: block; }
+
+.animation-example.ng-enter.ng-enter-active,
+.animation-example.ng-leave {
+  opacity: 1;
+  top: 0;
+  height: 30px; }
+
+.animation-example.ng-leave-active,
+.animation-example.ng-enter {
+  opacity: 0;
+  top: -50px;
+  height: 0px; }
